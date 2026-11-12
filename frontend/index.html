@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Municipal Citizen Grievance Redressal Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-badge">E-GOVERNANCE</span>
+        <h1>Municipal Citizen Service & Grievance Platform</h1>
+      </div>
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="file-tab">📝 File Grievance</button>
+        <button class="tab-btn" data-tab="track-tab">🔍 Track Status</button>
+        <button class="tab-btn" data-tab="staff-tab">🛠️ Staff Triage</button>
+        <button class="tab-btn" data-tab="analytics-tab">📊 Dashboard</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- FILE GRIEVANCE TAB -->
+    <section id="file-tab" class="tab-content active">
+      <div class="card form-card">
+        <h2>Submit a Civic Grievance</h2>
+        <p class="subtitle">Report road potholes, solid waste, street lights, or sewage issues in your ward.</p>
+        
+        <form id="grievance-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="citizen_name">Citizen Full Name *</label>
+              <input type="text" id="citizen_name" required placeholder="e.g. K. Vijay Bhaskar Reddy">
+            </div>
+            <div class="form-group">
+              <label for="citizen_phone">Contact Phone Number *</label>
+              <input type="tel" id="citizen_phone" required placeholder="10-digit mobile number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">Grievance Category *</label>
+              <select id="category" required>
+                <option value="">-- Select Category --</option>
+                <option value="Roads & Potholes">Roads & Potholes</option>
+                <option value="Solid Waste Management">Solid Waste Management</option>
+                <option value="Drainage & Sewage">Drainage & Sewage</option>
+                <option value="Street Lighting">Street Lighting</option>
+                <option value="Water Supply">Water Supply</option>
+                <option value="Public Health & Sanitation">Public Health & Sanitation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="priority">Priority *</label>
+              <select id="priority" required>
+                <option value="Medium">Medium (48-hr SLA)</option>
+                <option value="High">High / Emergency (24-hr SLA)</option>
+                <option value="Low">Low (72-hr SLA)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ward">Ward No. / Zone *</label>
+              <select id="ward" required>
+                <option value="Ward 101 - Central">Ward 101 - Central</option>
+                <option value="Ward 102 - North Zone">Ward 102 - North Zone</option>
+                <option value="Ward 103 - South Zone">Ward 103 - South Zone</option>
+                <option value="Ward 104 - East Zone">Ward 104 - East Zone</option>
+                <option value="Ward 105 - West Zone">Ward 105 - West Zone</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="location">Exact Landmark / Street *</label>
+              <input type="text" id="location" required placeholder="e.g. Near Bus Depot, 4th Cross Road">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Grievance Description * (Min 10 chars, Max 1000 chars)</label>
+            <textarea id="description" rows="3" required placeholder="Describe the civic issue in detail..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="photo_url">Photo Evidence URL (Optional)</label>
+            <input type="url" id="photo_url" placeholder="https://example.com/pothole.jpg">
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submit-btn">Submit Grievance</button>
+        </form>
+
+        <div id="submission-result" class="alert-box hidden"></div>
+      </div>
+    </section>
+
+    <!-- TRACK STATUS TAB -->
+    <section id="track-tab" class="tab-content">
+      <div class="card">
+        <h2>Live Grievance Tracking</h2>
+        <p class="subtitle">Enter your unique Tracking ID to see real-time updates and engineer assignments.</p>
+
+        <div class="search-bar">
+          <input type="text" id="track-input" placeholder="e.g. GRV-2026-12345">
+          <button class="btn btn-primary" id="track-btn">Track Status</button>
+        </div>
+
+        <div id="tracking-details" class="hidden">
+          <div class="ticket-header">
+            <div>
+              <span class="tracking-tag" id="ticket-id"></span>
+              <h3 id="ticket-title"></h3>
+              <p id="ticket-meta" class="meta-text"></p>
+            </div>
+            <div class="status-badge-container">
+              <span class="badge" id="ticket-status-badge"></span>
+              <span class="sla-badge" id="ticket-sla-badge"></span>
+            </div>
+          </div>
+
+          <div class="ticket-body">
+            <p><strong>Description:</strong> <span id="ticket-desc"></span></p>
+            <p><strong>Location:</strong> <span id="ticket-loc"></span> (<span id="ticket-ward"></span>)</p>
+            <p><strong>Assigned Engineer:</strong> <span id="ticket-eng">Not yet assigned</span></p>
+            <p><strong>SLA Deadline:</strong> <span id="ticket-deadline"></span></p>
+          </div>
+
+          <h4>Status Lifecycle & Audit Trail</h4>
+          <div class="timeline" id="ticket-timeline"></div>
+
+          <!-- FEEDBACK SECTION IF RESOLVED -->
+          <div id="feedback-section" class="feedback-card hidden">
+            <h4>Citizen Feedback & Verification</h4>
+            <p>Your issue has been marked resolved. Are you satisfied with the municipal response?</p>
+            <div class="rating-group">
+              <label>Rating:</label>
+              <select id="rating-val">
+                <option value="5">⭐⭐⭐⭐⭐ Excellent (5/5)</option>
+                <option value="4">⭐⭐⭐⭐ Good (4/5)</option>
+                <option value="3">⭐⭐⭐ Average (3/5)</option>
+                <option value="2">⭐⭐ Poor (2/5)</option>
+                <option value="1">⭐ Unacceptable (1/5)</option>
+              </select>
+            </div>
+            <textarea id="feedback-comment" rows="2" placeholder="Citizen remarks..."></textarea>
+            <div class="btn-group">
+              <button class="btn btn-success" id="accept-resolution-btn">Confirm Resolution & Close</button>
+              <button class="btn btn-danger" id="reopen-complaint-btn">Issue Not Fixed - Reopen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF / FIELD ENGINEER TRIAGE TAB -->
+    <section id="staff-tab" class="tab-content">
+      <div class="card">
+        <div class="triage-header">
+          <div>
+            <h2>Municipal Triage & Operations Desk</h2>
+            <p class="subtitle">Review citizen requests, dispatch field personnel, and execute resolutions.</p>
+          </div>
+          <button class="btn btn-secondary" id="refresh-queue-btn">🔄 Refresh Queue</button>
+        </div>
+
+        <div class="filter-bar">
+          <select id="filter-status">
+            <option value="">All Statuses</option>
+            <option value="SUBMITTED">SUBMITTED</option>
+            <option value="ASSIGNED">ASSIGNED</option>
+            <option value="IN_PROGRESS">IN_PROGRESS</option>
+            <option value="RESOLVED">RESOLVED</option>
+            <option value="CLOSED">CLOSED</option>
+            <option value="REOPENED">REOPENED</option>
+          </select>
+          <select id="filter-ward">
+            <option value="">All Wards</option>
+            <option value="Ward 101 - Central">Ward 101 - Central</option>
+            <option value="Ward 102 - North Zone">Ward 102 - North Zone</option>
+            <option value="Ward 103 - South Zone">Ward 103 - South Zone</option>
+            <option value="Ward 104 - East Zone">Ward 104 - East Zone</option>
+            <option value="Ward 105 - West Zone">Ward 105 - West Zone</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tracking ID</th>
+                <th>Category</th>
+                <th>Ward</th>
+                <th>Priority</th>
+                <th>SLA Status</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="triage-table-body">
+              <tr><td colspan="8" class="text-center">Loading queue...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD ANALYTICS TAB -->
+    <section id="analytics-tab" class="tab-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-title">Total Registered Grievances</span>
+          <span class="stat-value" id="stat-total">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Pending Resolution</span>
+          <span class="stat-value text-warning" id="stat-pending">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Resolved & Closed</span>
+          <span class="stat-value text-success" id="stat-resolved">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Avg Citizen Satisfaction</span>
+          <span class="stat-value" id="stat-rating">0.0 / 5</span>
+        </div>
+      </div>
+
+      <div class="card analytics-breakdown">
+        <h3>Grievance Categorization & Ward Distribution</h3>
+        <div class="breakdown-grid" id="breakdown-container"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL FOR ASSIGNMENT & STATUS UPDATE -->
+  <div id="action-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" id="modal-close">&times;</span>
+      <h3 id="modal-title">Take Action</h3>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
