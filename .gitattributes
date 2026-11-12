@@ -1,0 +1,12 @@
+# Auto-detect text files and normalize line endings
+* text=auto eol=lf
+
+*.py text diff=python
+*.html text
+*.css text
+*.js text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+*.docx binary
